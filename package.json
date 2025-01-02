@@ -1,0 +1,20 @@
+{
+  "type": "commonjs",
+  "name": "my-project",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@discordjs/voice": "^0.18.0",
+    "@google/generative-ai": "^0.1.1",
+    "axios": "^1.7.9",
+    "discord.js": "^14.17.2",
+    "dotenv": "^16.4.7",
+    "fs": "^0.0.1-security"
+  }
+}
