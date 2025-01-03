@@ -1,19 +1,18 @@
-# Use an official Node.js runtime as a base image
-FROM node:18-slim
+# use an official node.js runtime as a base image
+from node:18-slim
 
-# Set the working directory inside the container
-WORKDIR /usr/src/app
+# set the working directory inside the container
+workdir /usr/src/app
 
-# Copy package.json and package-lock.json to install dependencies first
-COPY package*.json ./
+# copy package.json and package-lock.json to install dependencies first
+copy package*.json ./
 
-# Install project dependencies
-RUN npm install
+# install project dependencies
+run apt-get install ffmpeg
+run npm install
 
-FROM jrottenberg/ffmpeg:4.4-alpine
+# copy the rest of your application files into the container
+copy . .
 
-# Copy the rest of your application files into the container
-COPY . .
-
-# Run the bot when the container starts
-CMD ["node", "main.js"] 
+# run the bot when the container starts
+cmd ["node", "main.js"] 
