@@ -8,7 +8,7 @@ workdir /usr/src/app
 copy package*.json ./
 
 # install project dependencies
-run apt-get install ffmpeg
+run apt-get update && apt-get install ffmpeg
 run npm install
 
 # copy the rest of your application files into the container
