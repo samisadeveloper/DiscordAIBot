@@ -1,9 +1,10 @@
 # Installation
 
-Run this command in your server:
+Run this commands in your server:
 ```
 git clone https://github.com/samisadeveloper/DiscordAIBot
 ```
+make sure to also install [FFmpeg](https://github.com/FFmpeg/FFmpeg)
 
 # Setting up APIs
 You need to sign up & generate API keys for the following:
