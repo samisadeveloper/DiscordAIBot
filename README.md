@@ -1,9 +1,10 @@
 # Installation
 
-Run this command in your server:
+Run this commands in your server:
 ```
 git clone https://github.com/samisadeveloper/DiscordAIBot
 ```
+make sure to also install [FFmpeg](https://github.com/FFmpeg/FFmpeg)
 
 # Setting up APIs
 You need to sign up & generate API keys for the following:
@@ -18,12 +19,24 @@ ELEVEN_LABS_API=YOUR_KEY
 ```
 
 # Docker
-Once you've set up APIs and included them in your .env file you need to install docker on the server you'll running your bot on.
+Once you've set up APIs and included them in your .env file you need to install [docker](https://github.com/docker) on the server you'll be running your bot on.
 As soon as docker is installed, enter the project root directory again and run the following to build and run it:
-
-**PS: If you're not on the apt-get package manager edit the dockerfile & change line 11 to use the correct package manager.**
 ```
 sudo docker build -t discord-bot .
+sudo docker run -d --name discord-bot --restart unless-stopped discord-bot
+```
+
+# Updating
+Whenever the project is out of date use the following to pull changes.
+```
+git pull origin master
+```
+
+Then you need to rebuild & replace the docker instance
+```
+sudo docker build -t discord-bot .
+sudo docker stop discord-bot
+sudo docker rm discord-bot
 sudo docker run -d --name discord-bot --restart unless-stopped discord-bot
 ```
 
