@@ -7,7 +7,7 @@ git clone https://github.com/samisadeveloper/DiscordAIBot
 
 # Setting up APIs
 You need to sign up & generate API keys for the following:
-[Google Gemini](https://gemini.google.com/app), [Discord API](https://discord.com/developers/applications), [Eleven Labs](https://elevenlabs.io/app/speech-synthesis/text-to-speech)
+[Google Gemini](https://aistudio.google.com/app/apikey), [Discord API](https://discord.com/developers/applications), [Eleven Labs](https://elevenlabs.io/app/speech-synthesis/text-to-speech)
 
 Once signed up, create a .env file in the root directory of the project with the following:
 
