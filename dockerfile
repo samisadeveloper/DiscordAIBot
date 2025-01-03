@@ -1,6 +1,9 @@
 # Use an official Node.js runtime as a base image
 FROM node:18-slim
 
+# Install FFMPEG
+FROM jrottenberg/ffmpeg:4.4-alpine
+
 # Set the working directory inside the container
 WORKDIR /usr/src/app
 
@@ -8,7 +11,6 @@ WORKDIR /usr/src/app
 COPY package*.json ./
 
 # Install project dependencies
-RUN apt-get update && apt-get install -y ffmpeg
 RUN npm install
 
 # Copy the rest of your application files into the container
