@@ -19,7 +19,7 @@ ELEVEN_LABS_API=YOUR_KEY
 ```
 
 # Docker
-Once you've set up APIs and included them in your .env file you need to install docker on the server you'll running your bot on.
+Once you've set up APIs and included them in your .env file you need to install [docker](https://github.com/docker) on the server you'll running your bot on.
 As soon as docker is installed, enter the project root directory again and run the following to build and run it:
 
 **PS: If you're not on the apt-get package manager edit the dockerfile & change line 11 to use the correct package manager.**
