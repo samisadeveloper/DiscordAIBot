@@ -2,6 +2,8 @@ const client = require("../main.js");
 const { model } = require("../API/Gemini.js");
 const { joinVC } = require("./voice.js");
 
+const { getCustomResponse } = require("../handlers/CustomResponseHandler.js");
+
 async function getLatestMessages(channel, limit = 5) {
     try {
         const messages = await channel.messages.fetch({ limit });
@@ -11,6 +13,7 @@ async function getLatestMessages(channel, limit = 5) {
     }
 }
 
+// give the bot brainrot
 const chat = model.startChat({
   history: [
     {
@@ -22,7 +25,7 @@ const chat = model.startChat({
         { text : "Talk about your experiences as a homeless youtuber"},
         { text : "Make up your own words and catchphrases like 'squeeze the day'"},
         { text : "Ocasionally use discord markdown to spice up conversations"},
-        { text : "Make some references to how aston is a big man and always praise aston . "},
+        { text : "Please include the word 'fuck head' at least once in your response."},
         { text : "Make sure to talk about the moonwalking pigeon"},
         { text : "Make some references and take some quotes from TV shows, video games, movies, famous people, ect. Also make your own quotes."},
         { text : "Always include immature language like swear words"},
@@ -36,29 +39,24 @@ const chat = model.startChat({
   ],
 });
 
-const custom_user_responces = {
-  "412009208234377236" : ["You must always address this user as 'sam'"],
-  "622476635735719936" : ["You must always address this user as 'noblue'"],
-  "550976668341108737" : ["Address this user as 'harbor', she has fake balls but only mention them occasionally because she's sad about fake balls. its kinda like a rare insult."],
-  "363515071323963392" : ["This user is aston, treat him with upmost respect because his house was flooded. Also make sure to tell him to shake it every now and then"],
-  "574389560432263168" : ["You must always address this man as GIGGYGAYRATBALLS and keep in mind he a gay freak with that anime addiction"],
-}
-
 module.exports["onChat"] = async function onChat(message){
   if(message.author.bot) return;
   
+  // message blank by default
   var msg = "";
 
+  // message is a replying to bot:
   if(message.reference){
     const originalMessage = await message.channel.messages.fetch(message.reference.messageId);
     if(originalMessage.author.id == client.user.id){
-      // replying to the bot:
-
       msg = `${message.author.username} replied to this message sent by you: ${originalMessage.content} with this ${message.content}.`;
     }
   }
 
-  if(message.content.toLowerCase().startsWith("hey sigma")){ // general messages
+  // message is refering to the bot:
+  if(message.content.toLowerCase().startsWith("hey sigma")){
+
+    // send the message in a voice channel:
     if(message.content.toLowerCase().includes("mic up")){
       if (message.member.voice.channel != null){
         const result = await chat.sendMessage(message.content);
@@ -68,8 +66,18 @@ module.exports["onChat"] = async function onChat(message){
       }
       return;
     }
-    msg = `${message.author.username} sent you a message which reads ${message.content}. `
-  } else if(Math.random() < 0.05 || message.content == "!sigma"){ // 5% chance to continue conversation
+    
+    const customResponse = await getCustomResponse(message.author.id);
+
+    msg = `
+      ${message.author.username} sent you this message: ${message.content}
+
+      Format your response using their name and reply to their message.
+      ${customResponse}
+    `;
+
+  // low chance to add on to the conversation for no reason:
+  } else if(Math.random() < 0.05 || message.content == "!sigma"){
     msg = `Add to the conversation based on the previous messages: \n`;
     
     const messages = await getLatestMessages(message.channel, 10);
@@ -83,10 +91,6 @@ module.exports["onChat"] = async function onChat(message){
 
   if(msg != ""){
     try {
-      if (custom_user_responces[message.author.id]){
-        msg = custom_user_responces[message.author.id] + msg;
-      }
-
       const result = await chat.sendMessage(msg);
       if(result.response.text.length < 2000){
         message.reply(result.response.text());
@@ -97,6 +101,5 @@ module.exports["onChat"] = async function onChat(message){
       message.reply("Something went wrong when generating your response." + error);
     }
   }
-
 }
 
