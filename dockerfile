@@ -1,8 +1,10 @@
 # Use an official Node.js runtime as a base image
 FROM node:18-slim
 
-# Install FFMPEG
-FROM jrottenberg/ffmpeg:4.4-alpine
+# install ffmpeg
+RUN apk add --no-cache \
+  ffmpeg \
+  && rm -rf /var/cache/apk/*
 
 # Set the working directory inside the container
 WORKDIR /usr/src/app
@@ -17,4 +19,4 @@ RUN npm install
 COPY . .
 
 # Run the bot when the container starts
-CMD ["node", "main.js"]	
+CMD ["node", "main.js"] 
