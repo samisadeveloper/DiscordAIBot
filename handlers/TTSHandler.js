@@ -3,7 +3,7 @@ const fs = require('fs');
 const dotenv = require('dotenv'); 
 
 const API_KEY = process.env.ELEVEN_LABS_API; 
-const VOICE_ID = 'fEVSHr4mtPxAG1PAJgXf';
+const VOICE_ID = process.env.VOICE_ID;
 
 // Function to generate TTS (Text to Speech) from ElevenLabs
 async function textToSpeech(message) {
