@@ -59,7 +59,7 @@ module.exports["onChat"] = async function onChat(message){
     // send the message in a voice channel:
     if(message.content.toLowerCase().includes("mic up")){
       if (message.member.voice.channel != null){
-        const result = await chat.sendMessage(message.content);
+        const result = await chat.sendMessage(message.content + "<internal>also make sure your message is very short to avoid overloading the text to speech.</internal>");
         joinVC(message.member.voice.channel, result.response.text());
       } else {
         message.reply("No. You're not in a voice channel!");

@@ -16,4 +16,3 @@ copy . .
 
 # run the bot when the container starts
 cmd ["node", "main.js"]
-
