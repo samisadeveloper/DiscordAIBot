@@ -16,6 +16,7 @@ Once signed up, create a .env file in the root directory of the project with the
 GOOGLE_GEMINI_KEY=YOUR_KEY
 DISCORD_API_KEY=YOUR_KEY
 ELEVEN_LABS_API=YOUR_KEY
+VOICE_ID=eleven_labs_voice_id
 ```
 
 # Docker
