@@ -16,7 +16,7 @@ module.exports["joinVC"] = async function joinVC(channel, message) {
 
   if (connection != null){
     console.log("Already in a voice channel I think");
-    //handleTTS(message, connection);
+    handleTTS(message, connection);
     return;
   }
 
@@ -34,9 +34,9 @@ module.exports["joinVC"] = async function joinVC(channel, message) {
 
   connection.on(VoiceConnectionStatus.Ready, async () => {
     console.log('The bot has successfully connected to the channel!');
-      //handleTTS(message, connection);
+      handleTTS(message, connection);
     });
   connection.on(VoiceConnectionStatus.Disconnected, () => {
-    connection.destroy();
+    connection.destroy()
   })
 }
