@@ -2,7 +2,7 @@ const client = require("../main.js");
 const { model } = require("../API/Gemini.js");
 const { joinVC } = require("./voice.js");
 
-const { getCustomResponse } = require("../handlers/CustomResponseHandler.js");
+const { getCustomResponse, getCustomPersonality } = require("../handlers/CustomResponseHandler.js");
 
 async function getLatestMessages(channel, limit = 5) {
     try {
@@ -39,67 +39,63 @@ const chat = model.startChat({
   ],
 });
 
+// get a reply from a given message
+async function getReply(message, type){
+  const userTailoredResponse = getCustomResponse(message.author.id);
+  let customPersonality = "";
+
+  if (Math.random() >= 0.15){
+    customPersonality = getCustomPersonality();
+  }
+
+  console.log(`test: ${customPersonality}`)
+
+  let msg;
+  switch (type) {
+    case "voice":
+      msg = `${message.author.username} sent you this message and wants you to respond in vc: ${message.content}`;
+      break;
+    default:
+      msg = `${message.author.username} sent you this message: ${message.content}`;
+      break;
+  }
+
+  msg = `
+    ${msg} 
+
+    <custom parameters>
+    ${userTailoredResponse}
+    ${customPersonality}
+    </custom parameters>
+  `;
+
+  const result = await chat.sendMessage(msg);
+  return result.response.text();
+}
+
+function getMessageType(message){
+  if(message.content.toLowerCase().includes("mic up")){
+    return "voice";
+  }
+  return "";
+}
+
 module.exports["onChat"] = async function onChat(message){
   if(message.author.bot) return;
-  
-  // message blank by default
-  var msg = "";
 
-  // message is a replying to bot:
-  if(message.reference){
-    const originalMessage = await message.channel.messages.fetch(message.reference.messageId);
-    if(originalMessage.author.id == client.user.id){
-      msg = `${message.author.username} replied to this message sent by you: ${originalMessage.content} with this ${message.content}.`;
-    }
-  }
-
-  // message is refering to the bot:
-  if(message.content.toLowerCase().startsWith("hey sigma")){
-
-    // send the message in a voice channel:
-    if(message.content.toLowerCase().includes("mic up")){
-      if (message.member.voice.channel != null){
-        const result = await chat.sendMessage(message.content + "<internal>Responses should be a maximum of 3 sentences</internal>");
-        joinVC(message.member.voice.channel, result.response.text());
-      } else {
-        message.reply("No. You're not in a voice channel!");
-      }
-      return;
-    }
-    
-    const customResponse = await getCustomResponse(message.author.id);
-
-    msg = `
-      ${message.author.username} sent you this message: ${message.content}
-
-      Format your response using their name and reply to their message.
-      ${customResponse}
-    `;
-
-  // low chance to add on to the conversation for no reason:
-  } else if(Math.random() < 0.05 || message.content == "!sigma"){
-    msg = `Add to the conversation based on the previous messages: \n`;
-    
-    const messages = await getLatestMessages(message.channel, 10);
-
-    messages.forEach(message => {
-      if(!message.author.bot && message.content != "!sigma"){
-        msg += message.content + "\n";
-      }
-    })
-  }
-
-  if(msg != ""){
+  if(message.content.toLowerCase().includes("hey sigma")){ // the bot is mentioned 
     try {
-      const result = await chat.sendMessage(msg);
-      if(result.response.text.length < 2000){
-        message.reply(result.response.text());
+      const type = getMessageType(message);
+      const reply = await getReply(message, type);
+
+      if (type != "voice"){
+        message.reply(reply);
       } else {
-        throw new Error("Too many characters blud! " + result.response.text.length);
+        message.reply("*Generating a voice message...*")
+        joinVC(message.member.voice.channel, reply);
       }
-    } catch(error){
-      message.reply("Something went wrong when generating your response." + error);
+    } catch (error) {
+      message.reply("Something went wrong when generating your response. " + error);
     }
   }
 }
-
